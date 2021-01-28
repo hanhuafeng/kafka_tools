@@ -341,7 +341,7 @@ class Toplevel1:
         self.Delete_Button.configure(text='''删除选中''')
 
         self.Run_Producer_Button = tk.Button(top)
-        self.Run_Producer_Button.place(relx=0.72, rely=0.5, height=28, width=160)
+        self.Run_Producer_Button.place(relx=0.72, rely=0.5, height=28, width=75)
         self.Run_Producer_Button.configure(activebackground="#ececec")
         self.Run_Producer_Button.configure(activeforeground="#000000")
         self.Run_Producer_Button.configure(background="#d9d9d9")
@@ -354,7 +354,7 @@ class Toplevel1:
         self.Run_Producer_Button.configure(text='''发送消息''')
 
         self.Run_Consumer_Button = tk.Button(top, command=lambda: thread_it(receiveMsg))
-        self.Run_Consumer_Button.place(relx=0.72, rely=0.6, height=28, width=160)
+        self.Run_Consumer_Button.place(relx=0.86, rely=0.5, height=28, width=75)
         self.Run_Consumer_Button.configure(activebackground="#ececec")
         self.Run_Consumer_Button.configure(activeforeground="#000000")
         self.Run_Consumer_Button.configure(background="#d9d9d9")
@@ -366,6 +366,20 @@ class Toplevel1:
         self.Run_Consumer_Button.configure(highlightcolor="black")
         self.Run_Consumer_Button.configure(pady="0")
         self.Run_Consumer_Button.configure(text='''启动消费者''')
+
+        self.Run_Consumer_Button = tk.Button(top, command=lambda: thread_it(reload_tree_data(self.tree)))
+        self.Run_Consumer_Button.place(relx=0.72, rely=0.6, height=28, width=160)
+        self.Run_Consumer_Button.configure(activebackground="#ececec")
+        self.Run_Consumer_Button.configure(activeforeground="#000000")
+        self.Run_Consumer_Button.configure(background="#d9d9d9")
+        # self.Button1.configure(cursor="fleur")
+        self.Run_Consumer_Button.configure(disabledforeground="#a3a3a3")
+        self.Run_Consumer_Button.configure(font="TkFixedFont")
+        self.Run_Consumer_Button.configure(foreground="#000000")
+        self.Run_Consumer_Button.configure(highlightbackground="#d9d9d9")
+        self.Run_Consumer_Button.configure(highlightcolor="black")
+        self.Run_Consumer_Button.configure(pady="0")
+        self.Run_Consumer_Button.configure(text='''列表刷新''')
 
         self.Info_Text = tk.Text(top)  # 宽度为80个字母(40个汉字)，高度为1个行高
         self.Info_Text.place(relx=0, rely=0.69, height=100, width=595)
