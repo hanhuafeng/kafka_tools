@@ -9,8 +9,10 @@ import json
 class Consummer:
     def __init__(self, textArea, topic='', groupId='', bootstrapServers=''):
         self.consumer = KafkaConsumer(topic, group_id=groupId, bootstrap_servers=bootstrapServers)
+
         self.flag = False
         self.textArea = textArea
+        self.textArea.insert('end', '连接成功，等待接收数据。。。\n')
 
     def start(self):
         try:

@@ -367,19 +367,19 @@ class Toplevel1:
         self.Run_Consumer_Button.configure(pady="0")
         self.Run_Consumer_Button.configure(text='''启动消费者''')
 
-        self.Run_Consumer_Button = tk.Button(top, command=lambda: thread_it(reload_tree_data(self.tree)))
-        self.Run_Consumer_Button.place(relx=0.72, rely=0.6, height=28, width=160)
-        self.Run_Consumer_Button.configure(activebackground="#ececec")
-        self.Run_Consumer_Button.configure(activeforeground="#000000")
-        self.Run_Consumer_Button.configure(background="#d9d9d9")
+        self.Run_Refresh_Button = tk.Button(top, command=lambda: thread_it(reload_tree_data(self.tree)))
+        self.Run_Refresh_Button.place(relx=0.72, rely=0.6, height=28, width=160)
+        self.Run_Refresh_Button.configure(activebackground="#ececec")
+        self.Run_Refresh_Button.configure(activeforeground="#000000")
+        self.Run_Refresh_Button.configure(background="#d9d9d9")
         # self.Button1.configure(cursor="fleur")
-        self.Run_Consumer_Button.configure(disabledforeground="#a3a3a3")
-        self.Run_Consumer_Button.configure(font="TkFixedFont")
-        self.Run_Consumer_Button.configure(foreground="#000000")
-        self.Run_Consumer_Button.configure(highlightbackground="#d9d9d9")
-        self.Run_Consumer_Button.configure(highlightcolor="black")
-        self.Run_Consumer_Button.configure(pady="0")
-        self.Run_Consumer_Button.configure(text='''列表刷新''')
+        self.Run_Refresh_Button.configure(disabledforeground="#a3a3a3")
+        self.Run_Refresh_Button.configure(font="TkFixedFont")
+        self.Run_Refresh_Button.configure(foreground="#000000")
+        self.Run_Refresh_Button.configure(highlightbackground="#d9d9d9")
+        self.Run_Refresh_Button.configure(highlightcolor="black")
+        self.Run_Refresh_Button.configure(pady="0")
+        self.Run_Refresh_Button.configure(text='''列表刷新''')
 
         self.Info_Text = tk.Text(top)  # 宽度为80个字母(40个汉字)，高度为1个行高
         self.Info_Text.place(relx=0, rely=0.69, height=100, width=595)
@@ -418,6 +418,7 @@ class Toplevel1:
             try:
                 boot = self.IP_Entry.get() + ':' + self.Port_Entry.get()
                 Producer(boot, self.Info_Text.get('0.0', 'end').strip("\n"), self.Topic_Entry.get())
+                messagebox.showinfo("成功", "消息发送成功")
             except Exception as e:
                 messagebox.showinfo("错误", "生产信息失败:" + str(e))
 
@@ -450,7 +451,7 @@ class Toplevel1:
                         consummer.close()
                     messagebox.showinfo("成功", "停止成功")
                 except Exception as e:
-                    messagebox.showinfo("成功", "停止失败,错误信息:" + str(e))
+                    messagebox.showinfo("错误", "停止失败,错误信息:" + str(e))
 
         def delete():
             item = self.tree.selection()
