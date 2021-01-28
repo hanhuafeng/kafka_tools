@@ -33,6 +33,7 @@ except ImportError:
     py3 = True
 
 import sqlite3
+import platform
 
 w = None
 consummer = None
@@ -45,6 +46,9 @@ def vp_start_gui():
     """""
     global val, w, root
     root = tk.Tk()
+    sys_type = platform.system()
+    print(sys_type)
+    root.iconbitmap(os.path.join(os.path.dirname(sys.argv[0]), "icon.ico"))
     main_support.set_Tk_var()
     top = Toplevel1(root)
     main_support.init(root, top)
