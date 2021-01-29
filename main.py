@@ -384,6 +384,15 @@ class Toplevel1:
         self.Info_Text = tk.Text(top)  # 宽度为80个字母(40个汉字)，高度为1个行高
         self.Info_Text.place(relx=0, rely=0.69, height=100, width=595)
 
+        # scroll = TK.Scrollbar()
+        # # 放到窗口的右侧, 填充Y竖直方向
+        # # scroll.pack(side=TK.RIGHT, fill=TK.Y)
+        # scroll.place(relx=1, rely=1)
+        #
+        # # 两个控件关联
+        # scroll.config(command=self.Info_Text.yview)
+        # self.Info_Text.config(yscrollcommand=scroll.set)
+
         def add(event):
             addNewDataInDb(self.IP_Entry.get(), self.Port_Entry.get(), self.Topic_Entry.get(), self.GroupId_Entry.get())
             reload_tree_data(self.tree)
