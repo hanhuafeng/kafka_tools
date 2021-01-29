@@ -396,6 +396,7 @@ class Toplevel1:
         def add(event):
             addNewDataInDb(self.IP_Entry.get(), self.Port_Entry.get(), self.Topic_Entry.get(), self.GroupId_Entry.get())
             reload_tree_data(self.tree)
+            self.tree.see(self.tree.get_children()[len(self.tree.get_children())-1])
 
         def readTreeData(event):
             item = self.tree.selection()
