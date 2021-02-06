@@ -15,6 +15,7 @@ from Producer import Producer
 import threading
 import os
 import sys
+import webbrowser
 
 
 
@@ -384,6 +385,16 @@ class Toplevel1:
         self.Info_Text = tk.Text(top)  # 宽度为80个字母(40个汉字)，高度为1个行高
         self.Info_Text.place(relx=0, rely=0.69, height=100, width=595)
 
+        self.GitHub_Label = tk.Label(top)
+        self.GitHub_Label.place(relx=0, rely=0.94, height=23, width=500)
+        self.GitHub_Label.configure(background="#d9d9d9")
+        self.GitHub_Label.configure(disabledforeground="#a3a3a3")
+        self.GitHub_Label.configure(font="TkFixedFont 14")
+        self.GitHub_Label.configure(foreground="#000000")
+        self.GitHub_Label.configure(cursor="hand")
+        self.GitHub_Label.configure(justify="left")
+        self.GitHub_Label.configure(text='''GitHub地址（有最新版打包）: https://github.com/hanhuafeng/kafka_tools.git''')
+
         # scroll = TK.Scrollbar()
         # # 放到窗口的右侧, 填充Y竖直方向
         # # scroll.pack(side=TK.RIGHT, fill=TK.Y)
@@ -480,7 +491,24 @@ class Toplevel1:
                 messagebox.showinfo("成功", "删除成功")
                 reload_tree_data(self.tree)
 
+        def open_in_browser(event):
+            """
+            从浏览器中打开指定网页
+            :param
+            :return:
+            """
+            webbrowser.open('https://github.com/hanhuafeng/kafka_tools.git')
+        def movenIn(event):
+            self.GitHub_Label.configure(font="TkFixedFont 14 underline")
+        def movenOut(event):
+            self.GitHub_Label.configure(font="TkFixedFont 14")
+
+
+
         self.Save_Button.bind('<ButtonRelease-1>', add)  # 绑定添加事件===========
+        self.GitHub_Label.bind('<ButtonRelease-1>', open_in_browser)  # 绑定添加事件===========
+        self.GitHub_Label.bind('<Enter>', movenIn)  # 绑定添加事件===========
+        self.GitHub_Label.bind('<Leave> ', movenOut)  # 绑定添加事件===========
         self.Run_Producer_Button.bind('<ButtonRelease-1>', sendMsg)  # 绑定添加事件===========
         self.tree.bind('<Double-1>', readTreeData)  # 表格绑定左键双击事件
         # self.Button1_5.bind('<ButtonRelease-1>', FindByTiaojian)  # 绑定单击离开事件===========
