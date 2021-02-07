@@ -387,9 +387,9 @@ class Toplevel1:
         self.GitHub_Label.place(relx=0, rely=0.94, height=23, width=500)
         self.GitHub_Label.configure(background="#d9d9d9")
         self.GitHub_Label.configure(disabledforeground="#a3a3a3")
-        self.GitHub_Label.configure(font="TkFixedFont 14")
+        self.GitHub_Label.configure(font="TkFixedFont 10")
         self.GitHub_Label.configure(foreground="#000000")
-        self.GitHub_Label.configure(cursor="hand")
+        # self.GitHub_Label.configure(cursor="hand")
         self.GitHub_Label.configure(justify="left")
         self.GitHub_Label.configure(text='''GitHub地址（有最新版打包）: https://github.com/hanhuafeng/kafka_tools.git''')
 
@@ -498,10 +498,10 @@ class Toplevel1:
             webbrowser.open('https://github.com/hanhuafeng/kafka_tools.git')
 
         def movenIn(event):
-            self.GitHub_Label.configure(font="TkFixedFont 14 underline")
+            self.GitHub_Label.configure(font="TkFixedFont 10 underline")
 
         def movenOut(event):
-            self.GitHub_Label.configure(font="TkFixedFont 14")
+            self.GitHub_Label.configure(font="TkFixedFont 10")
 
         self.Save_Button.bind('<ButtonRelease-1>', add)  # 绑定添加事件===========
         self.GitHub_Label.bind('<ButtonRelease-1>', open_in_browser)  # 绑定添加事件===========

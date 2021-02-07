@@ -14,12 +14,15 @@ mac版本无法同时启动两个，可以右键项目，选择查看包内容�
     如果项目不会使用，可以直接下载kafka tools v1.0目录下的指定版本文件
     
 ## 软件截图
-![](https://raw.githubusercontent.com/hanhuafeng/pic_factory/master/20210129110350.png)
+![](https://img-blog.csdnimg.cn/20210207143122261.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hoZjc5OTk1NDc3Mg==,size_16,color_FFFFFF,t_70#pic_center)
 
 
 > 更新日志
-> 2020-01-28
+> 2021-01-28
 > 1. 项目上传github
 > 2. 修改项目的一些内容
+> 2021-02-07
+> 1. 增加了刷新列表的功能
+> 2. 增加github链接
 
 各位同行可以提出建设性的issues或者一起开发，把这个测试工具做大做强
