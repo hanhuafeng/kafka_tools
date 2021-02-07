@@ -17,8 +17,6 @@ import os
 import sys
 import webbrowser
 
-
-
 try:
     import Tkinter as tk
 except ImportError:
@@ -407,7 +405,7 @@ class Toplevel1:
         def add(event):
             addNewDataInDb(self.IP_Entry.get(), self.Port_Entry.get(), self.Topic_Entry.get(), self.GroupId_Entry.get())
             reload_tree_data(self.tree)
-            self.tree.see(self.tree.get_children()[len(self.tree.get_children())-1])
+            self.tree.see(self.tree.get_children()[len(self.tree.get_children()) - 1])
 
         def readTreeData(event):
             item = self.tree.selection()
@@ -498,12 +496,12 @@ class Toplevel1:
             :return:
             """
             webbrowser.open('https://github.com/hanhuafeng/kafka_tools.git')
+
         def movenIn(event):
             self.GitHub_Label.configure(font="TkFixedFont 14 underline")
+
         def movenOut(event):
             self.GitHub_Label.configure(font="TkFixedFont 14")
-
-
 
         self.Save_Button.bind('<ButtonRelease-1>', add)  # 绑定添加事件===========
         self.GitHub_Label.bind('<ButtonRelease-1>', open_in_browser)  # 绑定添加事件===========
