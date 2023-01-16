@@ -11,6 +11,7 @@ import main_support
 from tkinter import messagebox
 
 from Consummer import Consummer
+from HistoryMsgFrame import HistoryMsgFrame
 from Producer import Producer
 import threading
 import os
@@ -99,24 +100,45 @@ def readInit():
     :return:
     """
     # 如果db文件不存在则创建
-    if not os.path.exists(os.path.join(os.path.dirname(sys.argv[0]), "kafka_info.db")):
-        conn = sqlite3.connect(os.path.join(os.path.dirname(sys.argv[0]), "kafka_info.db"))
-        c = conn.cursor()
-        c.execute('''CREATE TABLE INFO
-                        (
-                            ID int autoincrement primary key,
-                            IP     TEXT    NOT NULL,
-                            PORT    TEXT   NOT NULL,
-                            TOPIC   TEXT   NOT NULL,
-                            GROUP_ID TEXT
-                        );'''
-                  )
-        conn.commit()
-        conn.close()
-    # 连接数据库，没有会自动创建文件，数据结构还是要上面定义
+    # if not os.path.exists(os.path.join(os.path.dirname(sys.argv[0]), "kafka_info.db")):
     conn = sqlite3.connect(os.path.join(os.path.dirname(sys.argv[0]), "kafka_info.db"))
     c = conn.cursor()
-    # 首先删除表中所有数据
+    c.execute('''CREATE TABLE IF NOT EXISTS INFO
+                    (
+                        ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        IP     TEXT    NOT NULL,
+                        PORT    TEXT   NOT NULL,
+                        TOPIC   TEXT   NOT NULL,
+                        GROUP_ID TEXT
+                    );'''
+              )
+    c.execute('''
+                create table IF NOT EXISTS history_msg
+        (
+            col_key            varchar(255),
+            topic          varchar(255),
+            partition      varchar(255),
+            offset         varchar(255),
+            timestamp_str      varchar(255),
+            timestamp_type varchar(255),
+            value          text
+        );
+    ''')
+    conn.commit()
+    conn.close()
+    try:
+        conn = sqlite3.connect(os.path.join(os.path.dirname(sys.argv[0]), "kafka_info.db"))
+        c = conn.cursor()
+        # 尝试创建索引，因为索引无法重复创建，所以这里会报错，但是不影响程序运行
+        c.execute("CREATE UNIQUE INDEX history_msg_uk ON history_msg (col_key,topic,partition,offset);")
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(e)
+    # 测试连接数据库，没有会自动创建文件，数据结构还是要上面定义
+    conn = sqlite3.connect(os.path.join(os.path.dirname(sys.argv[0]), "kafka_info.db"))
+    c = conn.cursor()
+    # 首先查询表中所有数据
     c.execute("select * from INFO;")
     res = c.fetchall()
     # 添加数据
@@ -203,6 +225,8 @@ class Toplevel1:
         _ana2color = '#ececec'  # Closest X11 color: 'gray92'
         _entry_relx = 0.82
         _entry_width = 0.15
+        self.save_check_button_var = tk.StringVar()
+        self.save_check_button_var.set('F')
         self.style = ttk.Style()
         if sys.platform == "win32":
             self.style.theme_use('winnative')
@@ -340,7 +364,7 @@ class Toplevel1:
         self.Delete_Button.configure(text='''删除选中''')
 
         self.Run_Producer_Button = tk.Button(top)
-        self.Run_Producer_Button.place(relx=0.72, rely=0.5, height=28, width=75)
+        self.Run_Producer_Button.place(relx=0.72, rely=0.47, height=28, width=75)
         self.Run_Producer_Button.configure(activebackground="#ececec")
         self.Run_Producer_Button.configure(activeforeground="#000000")
         self.Run_Producer_Button.configure(background="#d9d9d9")
@@ -353,7 +377,7 @@ class Toplevel1:
         self.Run_Producer_Button.configure(text='''发送消息''')
 
         self.Run_Consumer_Button = tk.Button(top, command=lambda: thread_it(receiveMsg))
-        self.Run_Consumer_Button.place(relx=0.86, rely=0.5, height=28, width=75)
+        self.Run_Consumer_Button.place(relx=0.86, rely=0.47, height=28, width=75)
         self.Run_Consumer_Button.configure(activebackground="#ececec")
         self.Run_Consumer_Button.configure(activeforeground="#000000")
         self.Run_Consumer_Button.configure(background="#d9d9d9")
@@ -367,7 +391,7 @@ class Toplevel1:
         self.Run_Consumer_Button.configure(text='''启动消费者''')
 
         self.Run_Refresh_Button = tk.Button(top, command=lambda: thread_it(reload_tree_data(self.tree)))
-        self.Run_Refresh_Button.place(relx=0.72, rely=0.6, height=28, width=160)
+        self.Run_Refresh_Button.place(relx=0.72, rely=0.543, height=28, width=160)
         self.Run_Refresh_Button.configure(activebackground="#ececec")
         self.Run_Refresh_Button.configure(activeforeground="#000000")
         self.Run_Refresh_Button.configure(background="#d9d9d9")
@@ -379,6 +403,34 @@ class Toplevel1:
         self.Run_Refresh_Button.configure(highlightcolor="black")
         self.Run_Refresh_Button.configure(pady="0")
         self.Run_Refresh_Button.configure(text='''列表刷新''')
+
+        self.Read_History_Button = tk.Button(top)
+        self.Read_History_Button.place(relx=0.698, rely=0.612, height=28, width=90)
+        self.Read_History_Button.configure(activebackground="#ececec")
+        self.Read_History_Button.configure(activeforeground="#000000")
+        self.Read_History_Button.configure(background="#d9d9d9")
+        # self.Button1.configure(cursor="fleur")
+        self.Read_History_Button.configure(disabledforeground="#a3a3a3")
+        self.Read_History_Button.configure(font="TkFixedFont")
+        self.Read_History_Button.configure(foreground="#000000")
+        self.Read_History_Button.configure(highlightbackground="#d9d9d9")
+        self.Read_History_Button.configure(highlightcolor="black")
+        self.Read_History_Button.configure(pady="0")
+        self.Read_History_Button.configure(text='''查看历史数据''')
+
+        self.Read_Save_Checkbutton = tk.Checkbutton(top, variable=self.save_check_button_var, onvalue="T", offvalue="F")
+        self.Read_Save_Checkbutton.place(relx=0.85, rely=0.612, height=28, width=90)
+        self.Read_Save_Checkbutton.configure(activebackground="#ececec")
+        self.Read_Save_Checkbutton.configure(activeforeground="#000000")
+        self.Read_Save_Checkbutton.configure(background="#d9d9d9")
+        # self.Button1.configure(cursor="fleur")
+        self.Read_Save_Checkbutton.configure(disabledforeground="#a3a3a3")
+        self.Read_Save_Checkbutton.configure(font="TkFixedFont")
+        self.Read_Save_Checkbutton.configure(foreground="#000000")
+        self.Read_Save_Checkbutton.configure(highlightbackground="#d9d9d9")
+        self.Read_Save_Checkbutton.configure(highlightcolor="black")
+        self.Read_Save_Checkbutton.configure(pady="0")
+        self.Read_Save_Checkbutton.configure(text='''存储消费''')
 
         self.Info_Text = tk.Text(top)  # 宽度为80个字母(40个汉字)，高度为1个行高
         self.Info_Text.place(relx=0, rely=0.69, height=100, width=595)
@@ -454,7 +506,8 @@ class Toplevel1:
                 self.Run_Consumer_Button['text'] = '停止消费者'
                 try:
                     boot = self.IP_Entry.get() + ':' + self.Port_Entry.get()
-                    consummer = Consummer(self.Info_Text, self.Topic_Entry.get(), self.GroupId_Entry.get(), boot)
+                    consummer = Consummer(self.Info_Text, self.Topic_Entry.get(), self.GroupId_Entry.get(), boot,
+                                          self.save_check_button_var)
                     messagebox.showinfo("成功", "启动成功")
                     consummer.start()
                 except Exception as e:
@@ -503,11 +556,25 @@ class Toplevel1:
         def movenOut(event):
             self.GitHub_Label.configure(font="TkFixedFont 10")
 
+        def show_history_msg(event):
+            """
+            展示历史数据
+            """
+            item = self.tree.selection()
+            if item:
+                item_text = self.tree.item(item, "values")
+                print(item_text)
+                boot = item_text[0] + ':' + item_text[1]
+                HistoryMsgFrame(boot)
+            else:
+                messagebox.showinfo("错误", "请选择一条数据")
+
         self.Save_Button.bind('<ButtonRelease-1>', add)  # 绑定添加事件===========
         self.GitHub_Label.bind('<ButtonRelease-1>', open_in_browser)  # 绑定添加事件===========
         self.GitHub_Label.bind('<Enter>', movenIn)  # 绑定添加事件===========
         self.GitHub_Label.bind('<Leave> ', movenOut)  # 绑定添加事件===========
         self.Run_Producer_Button.bind('<ButtonRelease-1>', sendMsg)  # 绑定添加事件===========
+        self.Read_History_Button.bind('<ButtonRelease-1>', show_history_msg)  # 绑定添加事件===========
         self.tree.bind('<Double-1>', readTreeData)  # 表格绑定左键双击事件
         # self.Button1_5.bind('<ButtonRelease-1>', FindByTiaojian)  # 绑定单击离开事件===========
 
